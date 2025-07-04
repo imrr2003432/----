@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>دخول وقائمة فيديوهات</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      direction: rtl;
+    }
+    /* صندوق تسجيل الدخول */
+    .login-box {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 300px;
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .error-msg {
+      color: red;
+      margin-bottom: 10px;
+      display: none;
+    }
+    /* صفحة الفيديوهات */
+    #videosPage {
+      display: none;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 20px;
+    }
+    .video-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .video-card:hover {
+      transform: scale(1.05);
+    }
+    .video-thumb {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+    .video-info {
+      padding: 15px;
+      text-align: center;
+    }
+    .video-title {
+      font-size: 18px;
+      color: #333;
+      margin: 0 0 10px 0;
+    }
+    .play-btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .play-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+<!-- صفحة تسجيل الدخول -->
+<div class="login-box" id="loginBox">
+  <h2>تسجيل الدخول</h2>
+  <div class="error-msg" id="errorMsg">كود الدخول غير صحيح!</div>
+  <input type="password" id="passwordInput" placeholder="أدخل كود الدخول" />
+  <button onclick="checkPassword()">دخول</button>
+</div>
+
+<!-- صفحة الفيديوهات -->
+<div id="videosPage">
+  <h2 style="text-align:center; margin-bottom: 30px;">قائمة الفيديوهات</h2>
+  <div class="videos-grid" id="videosGrid">
+    <!-- سيتم إنشاء الكاردات هنا بواسطة جافاسكريبت -->
+  </div>
+</div>
+
+<script>
+  // قائمة الأكواد المسموح بها
+  const allowedPasswords = ["12345", "abcde", "98765", "password1", "admin123"];
+
+  // قائمة الفيديوهات (تعديل هذه القائمة حسب ما تريد)
+  const videos = [
+    {
+      title: "فيديو تعليمي 1",
+      thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtyP7FHRzzE2S7FlC2GGvZSuNsgrdlVVp1xQ&s",
+      url: "https://youtu.be/YLyZ59BCJrk"
+    },
+    {
+      title: "فيديو تعليمي 2",
+      thumbnail: "https://i.ytimg.com/vi/VIDEO_ID_2/hqdefault.jpg",
+      url: "https://youtu.be/YLyZ59BCJrk"
+    },
+    {
+      title: "فيديو تعليمي 3",
+      thumbnail: "https://i.ytimg.com/vi/VIDEO_ID_3/hqdefault.jpg",
+      url: "https://youtu.be/YLyZ59BCJrk"
+    },
+    {
+      title: "فيديو تعليمي 4",
+      thumbnail: "https://i.ytimg.com/vi/VIDEO_ID_4/hqdefault.jpg",
+      url: "https://youtu.be/YLyZ59BCJrk"
+    }
+  ];
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (allowedPasswords.includes(input)) {
+      // إخفاء صفحة تسجيل الدخول
+      document.getElementById("loginBox").style.display = "none";
+      // إظهار صفحة الفيديوهات
+      document.getElementById("videosPage").style.display = "block";
+      // إنشاء الكاردات
+      showVideos();
+    } else {
+      errorMsg.style.display = "block";
+    }
+  }
+
+  document.getElementById("passwordInput").addEventListener("input", function () {
+    document.getElementById("errorMsg").style.display = "none";
+  });
+
+  // دالة لإنشاء الكاردات وعرضها
+  function showVideos() {
+    const container = document.getElementById("videosGrid");
+    container.innerHTML = ""; // تنظيف المحتوى
+
+    videos.forEach(video => {
+      const card = document.createElement("div");
+      card.classList.add("video-card");
+
+      card.innerHTML = `
+        <img class="video-thumb" src="${video.thumbnail}" alt="${video.title}" />
+        <div class="video-info">
+          <h3 class="video-title">${video.title}</h3>
+          <button class="play-btn" onclick="window.open('${video.url}', '_blank')">تشغيل</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+</script>
+
+</body>
+</html>
