@@ -126,6 +126,9 @@
   </div>
 </div>
 
+<!-- عنصر الصوت المخفي -->
+<audio id="welcomeAudio" src="audio/111.mp3" preload="auto"></audio>
+
 <script>
   // قائمة الأكواد المسموح بها
   const allowedPasswords = ["12345", "abcde", "98765", "password1", "admin123"];
@@ -163,6 +166,13 @@
       document.getElementById("loginBox").style.display = "none";
       // إظهار صفحة الفيديوهات
       document.getElementById("videosPage").style.display = "block";
+
+      // تشغيل الصوت
+      const audio = document.getElementById("welcomeAudio");
+      audio.play().catch(e => {
+        console.log("تعذر تشغيل الصوت تلقائياً:", e);
+      });
+
       // إنشاء الكاردات
       showVideos();
     } else {
